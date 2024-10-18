@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag-and-Drop with Connection Lines</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="asset-panel">
+      <h3>Assets</h3>
+      <div class="asset" draggable="true" id="asset1">Asset 1</div>
+      <div class="asset" draggable="true" id="asset2">Asset 2</div>
+      <div class="asset" draggable="true" id="asset3">Asset 3</div>
+    </div>
+
+    <div class="canvas" id="canvas">
+      <svg id="connection-lines"></svg>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
