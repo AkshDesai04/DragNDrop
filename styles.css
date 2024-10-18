@@ -49,10 +49,11 @@ body {
   padding: 10px;
   background-color: #87CEEB;
   border: 1px solid #000;
-  cursor: pointer;
+  cursor: move;
   text-align: center;
 }
 
+/* Styles for the SVG lines */
 svg {
   position: absolute;
   top: 0;
@@ -64,4 +65,69 @@ svg {
 .line {
   stroke: black;
   stroke-width: 2;
+}
+
+/* Styles for the connection dots */
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot-top {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dot-right {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+}
+
+.dot-bottom {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dot-left {
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%);
+}
+
+.connection-container {
+  position: fixed; /* Fixed position at the bottom */
+  bottom: 0; /* Align to the bottom of the page */
+  left: 0;
+  right: 0;
+  max-height: 100px; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #f4f4f4; /* Background color to match the body */
+  border-top: 1px solid #ccc; /* Optional border for separation */
+  padding: 10px; /* Padding for aesthetics */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Optional shadow */
+}
+
+.connection-label {
+  text-align: left; /* Align text to the left */
+  margin: 0; /* Remove margin */
+}
+
+.error-message {
+  position: fixed; /* Fixed position */
+  bottom: 50px; /* Slightly above the bottom */
+  right: 20px; /* Align to the right */
+  background-color: #ffcccc; /* Light red background */
+  color: #ff0000; /* Red text */
+  padding: 10px; /* Padding for aesthetics */
+  border: 1px solid #ff0000; /* Red border */
+  border-radius: 5px; /* Rounded corners */
+  display: none; /* Hidden by default */
+  z-index: 1000; /* Ensure it appears above other elements */
 }
