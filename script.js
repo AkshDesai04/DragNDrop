@@ -5,8 +5,10 @@ const svg = document.getElementById('connection-lines');
 let draggedItem = null;
 let assetCounter = 0;
 let startPoint = null;
+let isDraggingAsset = false;
+let offsetX, offsetY;
 
-// Drag and Drop events
+// Drag and Drop events for initial asset drag from the left panel
 assets.forEach(asset => {
   asset.addEventListener('dragstart', handleDragStart);
   asset.addEventListener('dragend', handleDragEnd);
@@ -37,11 +39,46 @@ function handleDrop(e) {
   newAsset.style.top = `${y}px`;
   newAsset.textContent = draggedItem.textContent;
   newAsset.dataset.id = `asset${++assetCounter}`;
-  newAsset.addEventListener('mousedown', handleAssetClick);
+  newAsset.dataset.connectedLines = '[]'; // Store connected lines
+  newAsset.addEventListener('mousedown', startDraggingAsset);
+  newAsset.addEventListener('mouseup', stopDraggingAsset);
 
   canvas.appendChild(newAsset);
 }
 
+function startDraggingAsset(e) {
+  isDraggingAsset = true;
+  const asset = e.target;
+  asset.classList.add('dragging');
+
+  offsetX = e.clientX - asset.offsetLeft;
+  offsetY = e.clientY - asset.offsetTop;
+
+  canvas.addEventListener('mousemove', dragAsset);
+}
+
+function dragAsset(e) {
+  if (!isDraggingAsset) return;
+
+  const asset = document.querySelector('.dragging');
+  const x = e.clientX - offsetX;
+  const y = e.clientY - offsetY;
+
+  asset.style.left = `${x}px`;
+  asset.style.top = `${y}px`;
+
+  updateLines(asset);
+}
+
+function stopDraggingAsset(e) {
+  const asset = e.target;
+  asset.classList.remove('dragging');
+  isDraggingAsset = false;
+
+  canvas.removeEventListener('mousemove', dragAsset);
+}
+
+// Handle asset click and connecting lines
 function handleAssetClick(e) {
   const asset = e.target;
 
@@ -68,4 +105,40 @@ function createLine(startEl, endEl) {
   line.setAttribute('y2', endY);
   line.classList.add('line');
   svg.appendChild(line);
+
+  // Save the line information in both connected assets
+  updateConnectedLines(startEl, endEl, line);
+}
+
+// Update line positions when an asset is moved
+function updateLines(asset) {
+  const connectedLines = JSON.parse(asset.dataset.connectedLines);
+
+  connectedLines.forEach(lineData => {
+    const line = lineData.lineElement;
+    const startOrEnd = lineData.isStart ? 'start' : 'end';
+    
+    const assetX = asset.offsetLeft + asset.offsetWidth / 2;
+    const assetY = asset.offsetTop + asset.offsetHeight / 2;
+
+    if (startOrEnd === 'start') {
+      line.setAttribute('x1', assetX);
+      line.setAttribute('y1', assetY);
+    } else {
+      line.setAttribute('x2', assetX);
+      line.setAttribute('y2', assetY);
+    }
+  });
+}
+
+// Store connected line data in assets
+function updateConnectedLines(startEl, endEl, line) {
+  let startLines = JSON.parse(startEl.dataset.connectedLines);
+  let endLines = JSON.parse(endEl.dataset.connectedLines);
+
+  startLines.push({ lineElement: line, isStart: true });
+  endLines.push({ lineElement: line, isStart: false });
+
+  startEl.dataset.connectedLines = JSON.stringify(startLines);
+  endEl.dataset.connectedLines = JSON.stringify(endLines);
 }
